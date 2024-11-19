@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# Add flow rules to prevent broadcast storms
-ovs-ofctl add-flow s2 "in_port=1,actions=output:2"  # h1 to s2
-ovs-ofctl add-flow s2 "in_port=2,actions=output:1"  # s2 to h1
-ovs-ofctl add-flow s2 "in_port=3,actions=output:4"  # h2 to s2
-ovs-ofctl add-flow s2 "in_port=4,actions=output:3"  # s2 to h2
-ovs-ofctl add-flow s2 "in_port=5,actions=output:6"  # h4 to s2
-ovs-ofctl add-flow s2 "in_port=6,actions=output:5"  # s2 to h4
+# 停止所有交换机的流
+ovs-vsctl --all destroy
+
+# 添加流规则以防止环路
+# 这里需要根据你的网络配置添加具体的流规则
+# 示例：
+sudo ovs-ofctl add-flow s1 "in_port=1,actions=output:2"
+sudo ovs-ofctl add-flow s2 "in_port=1,actions=output:2"
+sudo ovs-ofctl add-flow s2 "in_port=2,actions=output:1"
+sudo ovs-ofctl add-flow s3 "in_port=1,actions=output:2"
