@@ -6,25 +6,22 @@ from mininet.log import setLogLevel
 
 class CustomTopo(Topo):
     def build(self):
-        # 创建交换机
         s1 = self.addSwitch('s1')
         s2 = self.addSwitch('s2')
         s3 = self.addSwitch('s3')
 
-        # 创建主机
         h1 = self.addHost('h1')
         h2 = self.addHost('h2')
         h3 = self.addHost('h3')
         h4 = self.addHost('h4')
 
-        # 创建链接
         self.addLink(h1, s1)
         self.addLink(h2, s2)
         self.addLink(h3, s3)
         self.addLink(h4, s3)
-        self.addLink(s1, s2)  # 原有链接
-        self.addLink(s2, s3)  # 原有链接
-        self.addLink(s2, s3)  # 添加额外链接
+        self.addLink(s1, s2) 
+        self.addLink(s2, s3) 
+        self.addLink(s2, s3) 
 
 def run():
     topo = CustomTopo()
@@ -32,11 +29,10 @@ def run():
     net.start()
     
     print("Testing connectivity between all hosts...")
-    
-    # 测试连通性
+
     net.pingAll()
     
-    CLI(net)  # 进入 Mininet CLI
+    CLI(net) 
     net.stop()
 
 if __name__ == '__main__':
