@@ -3,6 +3,7 @@ from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.cli import CLI
 from mininet.log import setLogLevel
+from mininet.node import OVSController
 import time
 
 class CustomTopo(Topo):
@@ -26,7 +27,7 @@ class CustomTopo(Topo):
 
 def run():
     topo = CustomTopo()
-    net = Mininet(topo=topo, link=TCLink)
+    net = Mininet(topo=topo, controller=OVSController, link=TCLink)
     net.start()
     
     print("Testing connectivity between all hosts...")

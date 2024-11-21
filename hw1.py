@@ -3,6 +3,7 @@ from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.cli import CLI
 from mininet.log import setLogLevel
+from mininet.node import OVSController
 import time
 
 class CustomTopo(Topo):
@@ -25,30 +26,25 @@ class CustomTopo(Topo):
 
 def run():
     topo = CustomTopo()
-    net = Mininet(topo=topo, link=TCLink)
+    net = Mininet(topo=topo, controller=OVSController, link=TCLink)
     net.start()
     
     print("Starting iperf3 tests...")
     
+    h1 = net.get('h1')
     h3 = net.get('h3')
+    
+    h1.cmd('iperf3 -s &')
+    print("Testing TCP throughput from h1 to h3...")
+    h3.cmd('iperf3 -c ' + h1.IP() + ' -t 10')
+
+    
+    h2 = net.get('h2')
     h4 = net.get('h4')
     
-    h3.cmd('iperf3 -s &')
-    time.sleep(10)
-    
-    print("Testing TCP throughput from h4 to h3...")
-    h4.cmd('iperf3 -c ' + h3.IP() + ' -t 10')
-    time.sleep(10)
-    
-    h1 = net.get('h1')
-    h2 = net.get('h2')
-    
     h2.cmd('iperf3 -s &')
-    time.sleep(10)
-    
-    print("Testing TCP throughput from h1 to h2...")
-    h1.cmd('iperf3 -c ' + h2.IP() + ' -t 10')
-    time.sleep(10)
+    print("Testing TCP throughput from h2 to h4...")
+    h4.cmd('iperf3 -c ' + h2.IP() + ' -t 10')
     
     CLI(net) 
     net.stop()
