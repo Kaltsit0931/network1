@@ -36,7 +36,7 @@ def run():
     
     h1.cmd('iperf3 -s &')
     print("Testing TCP throughput from h1 to h3...")
-    h3.cmd('iperf3 -c ' + h1.IP() + ' -t 10')
+    print(h3.cmd('iperf3 -c ' + h1.IP() + ' -t 10'))
 
     
     h2 = net.get('h2')
@@ -44,7 +44,7 @@ def run():
     
     h2.cmd('iperf3 -s &')
     print("Testing TCP throughput from h2 to h4...")
-    h4.cmd('iperf3 -c ' + h2.IP() + ' -t 10')
+    print(h4.cmd('iperf3 -c ' + h2.IP() + ' -t 10'))
     
     CLI(net) 
     net.stop()
