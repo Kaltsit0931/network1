@@ -1,26 +1,30 @@
 import socket
 import threading
 
-# Set up UDP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(('0.0.0.0', 8080))  # Listen on all interfaces
-
-def receive_messages():
+def listen_for_messages(sock):
     while True:
-        data, addr = sock.recvfrom(1024)
-        if addr != ('client_ip', 8080):
-            print(f"Received message: {data.decode()}")
+        try:
+            message, addr = sock.recvfrom(1024)
+            print(f"Received message: {message.decode('utf-8')}")
+        except:
+            break
 
-def send_message():
+def main():
+    client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    client.bind(('', 0))  # Bind to an available port
+
+    # Start a thread to listen for incoming messages
+    listener_thread = threading.Thread(target=listen_for_messages, args=(client,))
+    listener_thread.start()
+
+    print("Client started. Type your messages below:")
     while True:
-        message = input("Enter message to send: ")
-        sock.sendto(message.encode(), ('<broadcast>', 8080))  # Send to the broadcast address
+        message = input()
+        if message.lower() == 'exit':
+            break
+        client.sendto(message.encode('utf-8'), ('<broadcast>', 5000))
 
-if __name__ == '__main__':
-    # Start receiving thread
-    thread = threading.Thread(target=receive_messages)
-    thread.daemon = True
-    thread.start()
+    client.close()
 
-    # Start sending thread
-    send_message()
+if __name__ == "__main__":
+    main()
